@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Valentine's Day ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .hearts-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: rgba(255, 105, 180, 0.6);
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .start-screen {
+            text-align: center;
+            padding: 100px 20px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .start-screen h1 {
+            color: white;
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.5em;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .main-content {
+            display: none;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card h2 {
+            color: #ee5a6f;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .love-letter {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #333;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        /* Slideshow specific styles (will replace placeholders) */
+        .slideshow {
+            position: relative;
+            width: 100%;
+            /* Taller, more suitable for portrait photos while staying responsive */
+            height: clamp(520px, 75vh, 980px);
+            border-radius: 15px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .slideshow .slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            /* much faster fade to avoid visible zooming */
+            transition: opacity .12s linear;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Keep slides absolutely positioned and only change opacity to avoid layout shifts */
+        .slideshow .slide.active { opacity: 1; z-index: 2; }
+
+        /* Make images use their natural aspect ratio and fit inside the slideshow box
+           without cropping or zooming. This shows the whole picture with letterboxing. */
+        .slideshow img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            background: #111;
+        }
+
+        .slideshow .slideshow-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.45);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            z-index: 5;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+        }
+
+        .slideshow .slideshow-control.prev { left: 14px; }
+        .slideshow .slideshow-control.next { right: 14px; }
+
+        .slideshow-dots { position: absolute; left: 50%; transform: translateX(-50%); bottom: 12px; display:flex; gap:8px; z-index:6 }
+        .slideshow-dots button { width:10px; height:10px; border-radius:50%; border:none; background:rgba(255,255,255,0.5); cursor:pointer }
+        .slideshow-dots button.active { background: white }
+
+        /* Video swiper styles */
+        .video-swiper {
+            position: relative;
+            width: 100%;
+            height: clamp(420px, 60vh, 860px);
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+            margin: 8px 0;
+        }
+
+        .video-swiper .vslide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity .18s linear;
+        }
+
+        .video-swiper .vslide.active { opacity: 1; z-index: 2 }
+
+        .video-swiper video { max-width: 100%; max-height: 100%; width: auto; height: auto; background: #000; display:block }
+
+        .video-swiper .control { position: absolute; top:50%; transform: translateY(-50%); z-index: 6; background: rgba(0,0,0,0.5); color:#fff; border:none; width:44px; height:44px; border-radius:50%; display:grid; place-items:center; cursor:pointer }
+        .video-swiper .control.prev { left: 12px }
+        .video-swiper .control.next { right: 12px }
+
+        .video-dots { position: absolute; left:50%; transform: translateX(-50%); bottom:10px; z-index: 6; display:flex; gap:8px }
+        .video-dots button { width:10px; height:10px; border-radius:50%; border:none; background:rgba(255,255,255,0.45); cursor:pointer }
+        .video-dots button.active { background: white }
+
+        .photo-placeholder {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3em;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .photo-placeholder:hover {
+            transform: scale(1.05);
+        }
+
+        .message-revealer {
+            margin: 30px 0;
+        }
+
+        .hidden-message {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: all 0.5s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hidden-message.revealed {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+        }
+
+        .love-calculator {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .percentage {
+            font-size: 5em;
+            color: #ee5a6f;
+            font-weight: bold;
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .quiz-section {
+            margin: 30px 0;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .quiz-option {
+            background: white;
+            border: 2px solid #ee5a6f;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quiz-option:hover {
+            background: #ee5a6f;
+            color: white;
+            transform: translateX(10px);
+        }
+
+        .music-control {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .music-control:hover {
+            transform: scale(1.1);
+        }
+
+        .final-message {
+            text-align: center;
+            padding: 50px 20px;
+            font-size: 2em;
+            color: #ee5a6f;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        .margin-top-20 {
+            margin-top: 20px;
+        }
+
+        .white-text {
+            color: white;
+        }
+
+        .font-size-large {
+            font-size: 1.5em;
+        }
+
+            .margin-bottom-40 {
+                margin-bottom: 40px;
+            }
+    
+            .text-center {
+                text-align: center;
+            }
+    
+            .color-gray {
+                color: #666;
+            }
+    
+            .color-pink {
+                color: #ee5a6f;
+            }
+    
+            .margin-bottom-15 {
+                margin-bottom: 15px;
+            }
+    
+            @keyframes heartbeat {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="hearts-background" id="heartsContainer"></div>
+    
+        <div class="container">
+            <div class="start-screen" id="startScreen">
+                <h1>❤️ For My Beautiful Girlfriend ❤️</h1>
+                <p class="white-text font-size-large margin-bottom-40">Click to open your Valentine's surprise</p>
+                <p style="color: white; font-size: 1.5em; margin-bottom: 40px;">Click to open your Valentine's surprise</p>
+                <button class="start-btn" onclick="startExperience()">Open My Heart 💕</button>
+            </div>
+
+        <div class="main-content" id="mainContent">
+            <div class="card">
+                <h2>💌 A Love Letter Just For You 💌</h2>
+                <div class="love-letter">
+                    <p>My Dearest Love,</p>
+                    <p style="margin-top: 20px;">
+                        From quiet mornings to late-night talks, every moment with you has become my favorite moment. I can't remember our first conversation precisely, but from that moment, I could tell there was a connection between us—something deep. And from that moment on, we spoke every single day....we still do.
+                    </p>
+                    <p style="margin-top: 20px;">
+                        I love you in ways that words sometimes struggle to hold. And I will choose to love you not only when things are easy, but especially on the hard days—when love requires patience, understanding, and choice. My love for you is not fragile or fleeting, just like the Vinca flower, which portrays commitment, loyalty, steady love, and bonds that last.
+                    </p>
+                    <p style="margin-top: 20px;">
+                        I'm still learning to love you right. Please understand, that I'm not perfect and I don't think I'll ever be, but the goal is not to get perfection—Growth is. To be better than I was yesterday, to be better for us. To love you more deeply.
+                    </p>
+                    <p style="margin-top: 20px;">
+                        I remember the question "What is the whole point of the Garden, if the one flower you love is missing?" and at the time, I did not have an answer; all I was certain about was that I'd be so hurt. But with time, I kept asking myself why it would hurt so much, "why that flower, huh?!" Why does it matter so much more than the others?
+                    </p>
+                    <p style="margin-top: 20px;">
+                        That's when it dawned on me. Every flower in the garden carries meaning—deep meanings. The coleus, with its bold colors and striking patterns, signifies boldness, individuality—the ability to be authentic and stand-out. The Vinca—commitment, loyalty and resilience; a love that persists even when conditions are not ideal. The sweet potato vine, represents, humility and stable growth—the growth that signifies purpose over appearance.
+                    </p>
+                    <p style="margin-top: 20px;">
+                        Each and every flower plays a role. Every flower matters as much as the other, and if any other flower is missing, I'd still be hurt as much. So here's my answer to the question "What is the whole point of the Garden, if the one flower you love is missing?". My answer is what has grown once can grow again. Loss does not erase value. Absence does not negate love. Growth is possible because love is patient enough to nurture it again.
+                    </p>
+                    <p style="margin-top: 20px;">
+                        Are we ready to grow our Garden?
+                    </p>
+                    <p style="margin-top: 20px;">-Daniel ❤️</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📸 Our Beautiful Memories 📸</h2>
+                    <div class="photo-gallery">
+                        <div class="slideshow" id="slideshow">
+                            <div class="slide active" data-base="images/Image_1"><img src="images/Image_1.jpg" alt="Memory 1"></div>
+                            <div class="slide" data-base="images/Image_2"><img src="images/Image_2.jpg" alt="Memory 2"></div>
+                            <div class="slide" data-base="images/Image_3"><img src="images/Image_3.jpg" alt="Memory 3"></div>
+                            <div class="slide" data-base="images/Image_4"><img src="images/Image_4.jpg" alt="Memory 4"></div>
+                            <div class="slide" data-base="images/Image_5"><img src="images/Image_5.jpg" alt="Memory 5"></div>
+                            <div class="slide" data-base="images/Image_6"><img src="images/Image_6.jpg" alt="Memory 6"></div>
+
+                            <button class="slideshow-control prev" id="prevBtn" aria-label="Previous">‹</button>
+                            <button class="slideshow-control next" id="nextBtn" aria-label="Next">›</button>
+
+                            <div class="slideshow-dots" id="slideshowDots" aria-hidden="false"></div>
+                        </div>
+                    </div>
+                <p style="text-align: center; color: #666; margin-top: 20px;">
+                    (Place your cursor on the picture to pause it!)
+                </p>
+            </div>
+
+            <!-- Videos section: swipe through short clips -->
+            <div class="card">
+                <h2>🎬 Our Videos</h2>
+                <div class="video-gallery">
+                    <div class="video-swiper" id="videoSwiper">
+                        <div class="vslide" data-src="videos/Image_1.mp4">
+                            <video playsinline preload="metadata" controls></video>
+                        </div>
+                        <div class="vslide" data-src="videos/Image_2.mp4">
+                            <video playsinline preload="metadata" controls></video>
+                        </div>
+                        <div class="vslide" data-src="videos/Image_6.mp4">
+                            <video playsinline preload="metadata" controls></video>
+                        </div>
+                        <div class="vslide" data-src="videos/Smilevideo.mp4">
+                            <video playsinline preload="metadata" controls></video>
+                        </div>
+                        <div class="vslide" data-src="videos/Video_1.mp4">
+                            <video playsinline preload="metadata" controls></video>
+                        </div>
+                        <div class="vslide" data-src="videos/Video_2.mp4">
+                            <video playsinline preload="metadata" controls></video>
+                        </div>
+
+                        <button class="control prev" id="vPrev">‹</button>
+                        <button class="control next" id="vNext">›</button>
+                        <div class="video-dots" id="videoDots"></div>
+                    </div>
+                </div>
+                <p style="text-align:center; color:#666; margin-top:12px;">Swipe or use arrows to navigate; tap play to load the video. There is a Bible verse waiting for you</p>
+            </div>
+
+            <div class="card">
+                <h2>💖 Our Love Calculator 💖</h2>
+                <div class="love-calculator">
+                    <p style="font-size: 1.2em; color: #666;">Our compatibility score:</p>
+                    <div class="percentage">100%</div>
+                    <p style="font-size: 1.1em; color: #ee5a6f; font-weight: bold;">
+                        Perfect Match! 🎉
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>💝 Click to Reveal Sweet Messages 💝</h2>
+                <div class="message-revealer">
+                    <div class="hidden-message" onclick="revealMessage(this, 'You make every day brighter! ☀️')">
+                        Click me! 💕
+                    </div>
+                </div>
+                <div class="message-revealer">
+                    <div class="hidden-message" onclick="revealMessage(this, 'I fall in love with you more every day! 🌹')">
+                        Click me too! 💖
+                    </div>
+                </div>
+                <div class="message-revealer">
+                    <div class="hidden-message" onclick="revealMessage(this, 'You are my everything! 💍')">
+                        One more! 💗
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>❓ How Well Do You Know Me? ❓</h2>
+                <div class="quiz-section">
+                    <div class="quiz-question">
+                        <p style="font-weight: bold; margin-bottom: 15px;">What's my favorite thing about you?</p>
+                        <div class="quiz-option" onclick="answerQuiz(this, true)">Everything! 💕</div>
+                        <div class="quiz-option" onclick="answerQuiz(this, false)">Your smile</div>
+                        <div class="quiz-option" onclick="answerQuiz(this, false)">Your kindness</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="final-message">
+                    Happy Valentine's Day, My Love! ❤️<br>
+                    You Mean The World To Me! 🌎💕
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="music-control" id="musicControl" onclick="toggleMusic()">
+        🎵 Music: ON
+    </div>
+
+    <!-- Single audio element used as a playlist player (sources set from JS) -->
+    <audio id="bgMusic" preload="auto"></audio>
+
+    <script>
+        // Create floating hearts
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 15 + 's';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                container.appendChild(heart);
+            }
+        }
+
+        let musicPlaying = false;
+        const music = document.getElementById('bgMusic');
+
+        function startExperience() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            
+            // Try to play music
+            music.play().then(() => {
+                musicPlaying = true;
+                updateMusicControl();
+            }).catch(err => {
+                console.log('Music autoplay prevented');
+            });
+        }
+
+        function toggleMusic() {
+            if (musicPlaying) {
+                music.pause();
+                musicPlaying = false;
+            } else {
+                music.play();
+                musicPlaying = true;
+            }
+            updateMusicControl();
+        }
+
+        function updateMusicControl() {
+            document.getElementById('musicControl').innerHTML = 
+                musicPlaying ? '🎵 Music: ON' : '🔇 Music: OFF';
+        }
+
+        function revealMessage(element, message) {
+            element.classList.add('revealed');
+            element.innerHTML = message;
+            element.style.cursor = 'default';
+        }
+
+        function answerQuiz(element, correct) {
+            if (correct) {
+                element.style.background = '#4CAF50';
+                element.style.color = 'white';
+                element.innerHTML += ' ✓ Correct! 🎉';
+            } else {
+                element.style.background = '#ff6b6b';
+                element.style.color = 'white';
+                element.innerHTML += ' ❌ Try again!';
+            }
+            element.style.cursor = 'default';
+        }
+
+        // Initialize
+        createHearts();
+
+        // Playlist setup: play the local files in the `music/` folder sequentially
+        (function setupPlaylist() {
+            // Update this list if you rename files; these are detected names from the folder
+            const playlist = [
+                'musictrack_1.mp3',
+                'musictrack_2.mp3',
+                'musictrack_3.mp3',
+                'musictrack_4.mp3'
+            ];
+
+            let current = 0;
+            const audio = document.getElementById('bgMusic');
+            let autoStarted = false;
+
+            function trackSrc(i) {
+                // Use encodeURIComponent for filenames with spaces/special chars
+                return 'music/' + encodeURIComponent(playlist[i]);
+            }
+
+            function trackLabel(i) {
+                return playlist[i] ? playlist[i].replace(/\.[^.]+$/, '') : '';
+            }
+
+            function playTrack(i) {
+                if (!playlist.length) return;
+                current = (i + playlist.length) % playlist.length;
+                audio.src = trackSrc(current);
+                audio.play().then(() => {
+                    musicPlaying = true;
+                    updateMusicControl();
+                }).catch(err => {
+                    // playback blocked until user gesture — that's okay
+                    console.warn('Play blocked or failed', err);
+                    updateMusicControl();
+                });
+            }
+
+            // When a track ends, go to the next one
+            audio.addEventListener('ended', () => {
+                current = (current + 1) % playlist.length;
+                audio.src = trackSrc(current);
+                audio.play().catch(() => {});
+                updateMusicControl();
+            });
+
+            // Update control text to also show current track name when playing
+            const originalUpdate = updateMusicControl;
+            window.updateMusicControl = function() {
+                const ctrl = document.getElementById('musicControl');
+                if (musicPlaying) {
+                    ctrl.innerHTML = '🎵 Music: ON — ' + trackLabel(current);
+                } else {
+                    ctrl.innerHTML = '🔇 Music: OFF';
+                }
+            };
+
+            // Ensure the first track is loaded when user starts the experience
+            const originalStart = window.startExperience;
+            window.startExperience = function() {
+                originalStart();
+                if (!autoStarted) {
+                    playTrack(0);
+                    autoStarted = true;
+                }
+            };
+
+            // Also update toggle function to keep behavior consistent
+            const originalToggle = window.toggleMusic;
+            window.toggleMusic = function() {
+                if (musicPlaying) {
+                    audio.pause();
+                    musicPlaying = false;
+                } else {
+                    // if no src set, start at current
+                    if (!audio.src) audio.src = trackSrc(current);
+                    audio.play().then(() => { musicPlaying = true; }).catch(()=>{});
+                }
+                updateMusicControl();
+            };
+        })();
+
+        // Video swiper: populate video elements, handle swipe and playback
+        (function() {
+            const swiper = document.getElementById('videoSwiper');
+            if (!swiper) return;
+            const slides = Array.from(swiper.querySelectorAll('.vslide'));
+            const prev = document.getElementById('vPrev');
+            const next = document.getElementById('vNext');
+            const dotsWrap = document.getElementById('videoDots');
+            let current = 0;
+
+            // populate video src and posters if available
+            slides.forEach((s, i) => {
+                const video = s.querySelector('video');
+                const src = s.dataset.src;
+                if (video && src) {
+                    // encode spaces in filenames
+                    video.src = encodeURI(src);
+                    video.preload = 'metadata';
+                }
+                const b = document.createElement('button');
+                if (i === 0) b.classList.add('active');
+                b.addEventListener('click', () => { show(i); });
+                dotsWrap.appendChild(b);
+            });
+
+            const dots = Array.from(dotsWrap.children);
+
+            function pauseAllExcept(idx) {
+                slides.forEach((s, i) => {
+                    const v = s.querySelector('video');
+                    if (!v) return;
+                    if (i === idx) {
+                        // try to autoplay muted for quick preview
+                        v.muted = true;
+                        v.play().catch(()=>{});
+                    } else {
+                        v.pause();
+                        v.currentTime = 0;
+                    }
+                });
+            }
+
+            function show(i) {
+                slides[current].classList.remove('active');
+                dots[current].classList.remove('active');
+                current = (i + slides.length) % slides.length;
+                slides[current].classList.add('active');
+                dots[current].classList.add('active');
+                pauseAllExcept(current);
+            }
+
+            // arrow buttons: advance one slide per click
+            prev.addEventListener('click', () => show(current - 1));
+            next.addEventListener('click', () => show(current + 1));
+
+            // Simple swipe support (pointer events)
+            let startX = null;
+            let dragging = false;
+            let swiped = false; // track if we've already advanced during this gesture
+            swiper.addEventListener('pointerdown', (e) => {
+                // don't start swipe if the pointer is on a control button or a video's native controls
+                if (e.target.closest('.control') || e.target.closest('video') || e.target.tagName === 'BUTTON') return;
+                startX = e.clientX;
+                dragging = true;
+                swiped = false; // reset for new gesture
+                try { swiper.setPointerCapture(e.pointerId); } catch {}
+            });
+            swiper.addEventListener('pointermove', (e) => {
+                if (!dragging || startX === null) return;
+                const dx = e.clientX - startX;
+                // only advance once per swipe gesture even if user moves more
+                if (Math.abs(dx) > 60 && !swiped) {
+                    swiped = true;
+                    if (dx > 0) show(current - 1); else show(current + 1);
+                }
+            });
+            swiper.addEventListener('pointerup', (e) => { dragging = false; startX = null; swiped = false; try { swiper.releasePointerCapture(e.pointerId); } catch{} });
+            swiper.addEventListener('pointercancel', (e) => { dragging = false; startX = null; swiped = false; });
+
+            // pause others when user plays one video and unmute when user clicks unmute inside video controls
+            slides.forEach((s, i) => {
+                const v = s.querySelector('video');
+                if (!v) return;
+                v.addEventListener('play', () => {
+                    // if playing, pause others and unmute this
+                    slides.forEach((other, j) => { if (j !== i) { const ov = other.querySelector('video'); if (ov) { ov.pause(); } } });
+                    v.muted = false;
+                    musicPlaying = true; updateMusicControl();
+                });
+                v.addEventListener('pause', () => { /* no-op */ });
+            });
+
+            // start by showing first
+            slides.forEach((s,i)=> { if (i===0) s.classList.add('active'); else s.classList.remove('active'); });
+            pauseAllExcept(0);
+        })();
+
+        // Simple slideshow logic for the Memories section
+        (function() {
+            const slideshow = document.getElementById('slideshow');
+            if (!slideshow) return;
+            const slides = Array.from(slideshow.querySelectorAll('.slide'));
+            const dotsWrap = document.getElementById('slideshowDots');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            let idx = 0;
+            let timer = null;
+            // much faster auto-change so the slide switch appears instantaneous
+            const delay = 250;
+
+            // build dots
+            slides.forEach((_, i) => {
+                const b = document.createElement('button');
+                if (i === 0) b.classList.add('active');
+                b.addEventListener('click', () => { show(i); restartTimer(); });
+                dotsWrap.appendChild(b);
+            });
+
+            const dots = Array.from(dotsWrap.children);
+
+            // Image load fallback for different extensions (helps with HEIC files)
+            const exts = ['.jpg', '.jpeg', '.png', '.webp', '.heic'];
+            slides.forEach((slide, sIndex) => {
+                const img = slide.querySelector('img');
+                if (!img) return;
+                // determine base (from data-base if present, else strip extension)
+                const base = slide.getAttribute('data-base') || img.src.replace(/\.[^.]+$/, '');
+                img.dataset.base = base;
+                img.dataset.tryIndex = '0';
+
+                img.addEventListener('error', function onErr() {
+                    let idx = parseInt(img.dataset.tryIndex || '0', 10);
+                    idx++;
+                    if (idx >= exts.length) {
+                        // give up — show a subtle fallback (dark background)
+                        img.style.display = 'none';
+                        slide.style.background = 'linear-gradient(135deg,#333,#111)';
+                        // optionally show a small caption
+                        if (!slide.querySelector('.img-missing')) {
+                            const note = document.createElement('div');
+                            note.className = 'img-missing';
+                            note.style.color = '#fff';
+                            note.style.fontSize = '16px';
+                            note.style.padding = '12px';
+                            note.textContent = 'Image not available';
+                            slide.appendChild(note);
+                        }
+                        img.removeEventListener('error', onErr);
+                        return;
+                    }
+                    img.dataset.tryIndex = String(idx);
+                    const trySrc = base + exts[idx];
+                    img.src = trySrc;
+                });
+
+                // If the initial src fails (e.g., .jpg while only .heic exists), trigger fallback chain
+                // (some browsers won't fire error until appended; ensure handler is attached first)
+            });
+
+            function show(i) {
+                slides[idx].classList.remove('active');
+                dots[idx].classList.remove('active');
+                idx = (i + slides.length) % slides.length;
+                slides[idx].classList.add('active');
+                dots[idx].classList.add('active');
+            }
+
+            function next() { show(idx + 1); }
+            function prev() { show(idx - 1); }
+
+            prevBtn.addEventListener('click', () => { prev(); restartTimer(); });
+            nextBtn.addEventListener('click', () => { next(); restartTimer(); });
+
+            function restartTimer() {
+                if (timer) clearInterval(timer);
+                timer = setInterval(next, delay);
+            }
+
+            slideshow.addEventListener('mouseenter', () => { if (timer) clearInterval(timer); });
+            slideshow.addEventListener('mouseleave', () => { restartTimer(); });
+
+            // start
+            restartTimer();
+        })();
+    </script>
+</body>
+</html>
